@@ -43,7 +43,7 @@ public class MediaSerializerTest extends GenericImportSerializerTestBase {
                     Date.from(Instant.ofEpochSecond(1732713392)))));
 
     List<ImportableData<MediaSerializer.ExportData>> res =
-        iterableToList(MediaSerializer.serialize(container));
+        iterableToList(MediaSerializer.serialize(container, null));
     assertEquals(3, res.size());
 
     assertJsonEquals(

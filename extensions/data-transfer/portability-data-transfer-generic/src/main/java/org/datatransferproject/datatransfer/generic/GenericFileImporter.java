@@ -13,9 +13,13 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import org.datatransferproject.api.launcher.Monitor;
+import org.datatransferproject.datatransfer.generic.auth.OAuthTokenManager;
 import org.datatransferproject.spi.cloud.connection.ConnectionProvider;
 import org.datatransferproject.spi.cloud.storage.TemporaryPerJobDataStore;
 import org.datatransferproject.spi.cloud.storage.TemporaryPerJobDataStore.InputStreamWrapper;
+import org.datatransferproject.spi.transfer.idempotentexecutor.IdempotentImportExecutor;
+import org.datatransferproject.spi.transfer.provider.ImportResult;
+import org.datatransferproject.spi.transfer.provider.ImportResult.ResultType;
 import org.datatransferproject.spi.transfer.types.DestinationMemoryFullException;
 import org.datatransferproject.spi.transfer.types.InvalidTokenException;
 import org.datatransferproject.types.common.models.ContainerResource;
@@ -42,7 +46,7 @@ public class GenericFileImporter<C extends ContainerResource, R> extends Generic
   }
 
   @Override
-  public boolean importSingleItem(
+  public String importSingleItem(
       UUID jobId, TokensAndUrlAuthData authData, ImportableData<R> dataItem)
       throws IOException, InvalidTokenException, DestinationMemoryFullException {
     if (dataItem instanceof ImportableFileData) {
@@ -52,7 +56,7 @@ public class GenericFileImporter<C extends ContainerResource, R> extends Generic
     }
   }
 
-  private <T> boolean importSingleFileItem(
+  private <T> String importSingleFileItem(
       UUID jobId, AuthData authData, ImportableFileData<R> data)
       throws IOException, InvalidTokenException, DestinationMemoryFullException {
     InputStreamWrapper wrapper = connectionProvider.getInputStreamForItem(jobId, data.getFile());
@@ -73,7 +77,8 @@ public class GenericFileImporter<C extends ContainerResource, R> extends Generic
             .build();
 
     try (Response response = client.newCall(request).execute()) {
-      return parseResponse(response);
+      parseResponse(response);
+      return data.getName();
     } finally {
       tempFile.delete();
     }

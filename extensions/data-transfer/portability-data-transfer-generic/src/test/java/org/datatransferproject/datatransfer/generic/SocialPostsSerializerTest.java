@@ -35,7 +35,7 @@ public class SocialPostsSerializerTest extends GenericImportSerializerTestBase {
                     null)));
 
     List<ImportableData<SocialPostsSerializer.ExportData>> res =
-        iterableToList(SocialPostsSerializer.serialize(container));
+        iterableToList(SocialPostsSerializer.serialize(container, null));
 
     assertEquals(1, res.size());
     assertJsonEquals(

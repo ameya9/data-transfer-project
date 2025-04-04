@@ -38,7 +38,7 @@ public class CalendarSerializerTest extends GenericImportSerializerTestBase {
                     null)));
 
     List<ImportableData<CalendarSerializer.ExportData>> res =
-        iterableToList(CalendarSerializer.serialize(container));
+        iterableToList(CalendarSerializer.serialize(container, null));
 
     assertEquals(2, res.size());
 

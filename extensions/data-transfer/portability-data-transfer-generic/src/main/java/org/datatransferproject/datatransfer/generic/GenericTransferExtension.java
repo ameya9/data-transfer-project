@@ -24,6 +24,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.datatransferproject.api.launcher.ExtensionContext;
+import org.datatransferproject.datatransfer.generic.blobs.BlobbySerializer;
+import org.datatransferproject.datatransfer.generic.blobs.BlobsExportData;
 import org.datatransferproject.spi.cloud.storage.AppCredentialStore;
 import org.datatransferproject.spi.cloud.storage.JobStore;
 import org.datatransferproject.spi.transfer.extension.TransferExtension;
@@ -142,7 +144,7 @@ public class GenericTransferExtension implements TransferExtension {
     if (serviceConfig.supportsVertical(BLOBS)) {
       importerMap.put(
           BLOBS,
-          new GenericFileImporter<BlobbyStorageContainerResource, BlobbySerializer.ExportData>(
+          new GenericFileImporter<BlobbyStorageContainerResource, BlobsExportData>(
               BlobbySerializer::serialize,
               appCredentials,
               urlAppend(serviceConfig.getEndpoint(), "blobs"),

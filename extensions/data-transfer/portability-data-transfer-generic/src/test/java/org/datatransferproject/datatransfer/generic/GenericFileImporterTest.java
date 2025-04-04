@@ -19,6 +19,7 @@ import org.apache.commons.fileupload.FileUploadBase.FileUploadIOException;
 import org.apache.commons.fileupload.MultipartStream;
 import org.apache.commons.fileupload.MultipartStream.MalformedStreamException;
 import org.datatransferproject.api.launcher.Monitor;
+import org.datatransferproject.datatransfer.generic.blobs.CachedDownloadableItem;
 import org.datatransferproject.spi.cloud.storage.TemporaryPerJobDataStore;
 import org.datatransferproject.spi.transfer.idempotentexecutor.InMemoryIdempotentImportExecutor;
 import org.datatransferproject.types.common.models.IdOnlyContainerResource;
@@ -50,7 +51,7 @@ public class GenericFileImporterTest {
     webServer.shutdown();
   }
 
-  MultipartStream getMultipartStream(RecordedRequest request) {
+  public static MultipartStream getMultipartStream(RecordedRequest request) {
     assertTrue(
         format("Invalid Content-Type '%s'", request.getHeader("Content-Type")),
         request.getHeader("Content-Type").startsWith("multipart/related"));
@@ -74,7 +75,7 @@ public class GenericFileImporterTest {
     return builder.build();
   }
 
-  String readPartBody(MultipartStream stream) throws MalformedStreamException, IOException {
+  public  static String readPartBody(MultipartStream stream) throws MalformedStreamException, IOException {
     ByteArrayOutputStream os = new ByteArrayOutputStream();
     stream.readBodyData(os);
     return new String(os.toByteArray(), StandardCharsets.UTF_8);
@@ -84,7 +85,7 @@ public class GenericFileImporterTest {
   public void testGenericFileImporter() throws Exception {
     GenericFileImporter<IdOnlyContainerResource, String> importer =
         new GenericFileImporter<>(
-            container ->
+            (container, ex) ->
                 Arrays.asList(
                     new ImportableFileData<>(
                         new CachedDownloadableItem(container.getId(), container.getId()),
@@ -128,7 +129,7 @@ public class GenericFileImporterTest {
   public void testGenericFileImporterMixedTypes() throws Exception {
     GenericFileImporter<IdOnlyContainerResource, String> importer =
         new GenericFileImporter<>(
-            container ->
+            (container, ex) ->
                 Arrays.asList(
                     new ImportableFileData<>(
                         new CachedDownloadableItem("file", "file"),

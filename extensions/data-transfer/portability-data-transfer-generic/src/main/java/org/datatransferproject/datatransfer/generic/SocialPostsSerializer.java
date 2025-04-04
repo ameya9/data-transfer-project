@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import java.util.stream.Collectors;
+import org.datatransferproject.spi.transfer.idempotentexecutor.IdempotentImportExecutor;
 import org.datatransferproject.types.common.models.social.SocialActivityActor;
 import org.datatransferproject.types.common.models.social.SocialActivityContainerResource;
 import org.datatransferproject.types.common.models.social.SocialActivityModel;
@@ -54,7 +55,7 @@ public class SocialPostsSerializer {
           + "/extensions/data-transfer/portability-data-transfer-generic/src/main/java/org/datatransferproject/datatransfer/generic/SocialPostsSerializer.java";
 
   public static Iterable<ImportableData<ExportData>> serialize(
-      SocialActivityContainerResource container) {
+      SocialActivityContainerResource container, IdempotentImportExecutor idempotentImportExecutor) {
     return container.getActivities().stream()
         .map(
             activity ->

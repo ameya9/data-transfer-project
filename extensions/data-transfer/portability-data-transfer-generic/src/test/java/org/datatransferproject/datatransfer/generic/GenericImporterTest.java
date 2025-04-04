@@ -106,7 +106,7 @@ public class GenericImporterTest {
     GenericImporter<IdOnlyContainerResource, String> importer =
         getImporter(
             importerClass,
-            container ->
+            (container, ex) ->
                     List.of(
                             new ImportableData<>(
                                     new GenericPayload<>(container.getId(), "schemasource"),
@@ -136,7 +136,7 @@ public class GenericImporterTest {
     GenericImporter<IdOnlyContainerResource, Integer> importer =
         getImporter(
             importerClass,
-            container ->
+            (container, ex) ->
                 Arrays.asList(
                     new ImportableData<>(new GenericPayload<>(1, "schemasource"), "id1", "id1"),
                     new ImportableData<>(new GenericPayload<>(2, "schemasource"), "id2", "id2")));
@@ -171,7 +171,7 @@ public class GenericImporterTest {
     GenericImporter<IdOnlyContainerResource, Integer> importer =
         getImporter(
             importerClass,
-            container ->
+            (container, ex) ->
                 Arrays.asList(
                     new ImportableData<>(new GenericPayload<>(1, "schemasource"), "id1", "id1"),
                     new ImportableData<>(new GenericPayload<>(1, "schemasource"), "id1", "id1")));
@@ -198,7 +198,7 @@ public class GenericImporterTest {
     GenericImporter<IdOnlyContainerResource, String> importer =
         getImporter(
             importerClass,
-            container ->
+            (container, ex) ->
                     List.of(
                             new ImportableData<>(
                                     new GenericPayload<>(container.getId(), "schemasource"),
@@ -242,7 +242,7 @@ public class GenericImporterTest {
     GenericImporter<IdOnlyContainerResource, String> importer =
         getImporter(
             importerClass,
-            container ->
+            (container, ex) ->
                     List.of(
                             new ImportableData<>(
                                     new GenericPayload<>(container.getId(), "schemasource"),
@@ -271,7 +271,7 @@ public class GenericImporterTest {
     GenericImporter<IdOnlyContainerResource, String> importer =
         getImporter(
             importerClass,
-            container ->
+            (container, ex) ->
                     List.of(
                             new ImportableData<>(
                                     new GenericPayload<>(container.getId(), "schemasource"),
@@ -299,7 +299,7 @@ public class GenericImporterTest {
     GenericImporter<IdOnlyContainerResource, String> importer =
         getImporter(
             importerClass,
-            container ->
+            (container, ex) ->
                     List.of(
                             new ImportableData<>(
                                     new GenericPayload<>(container.getId(), "schemasource"),
@@ -327,7 +327,7 @@ public class GenericImporterTest {
     GenericImporter<IdOnlyContainerResource, String> importer =
             getImporter(
                     importerClass,
-                    container ->
+                (container, ex) ->
                             List.of(
                                     new ImportableData<>(
                                             new GenericPayload<>(container.getId(), "schemasource"),

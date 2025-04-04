@@ -6,6 +6,8 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.datatransferproject.datatransfer.generic.blobs.BlobbySerializer;
+import org.datatransferproject.datatransfer.generic.blobs.BlobsExportData;
 import org.datatransferproject.types.common.models.blob.BlobbyStorageContainerResource;
 import org.datatransferproject.types.common.models.blob.DigitalDocumentWrapper;
 import org.datatransferproject.types.common.models.blob.DtpDigitalDocument;
@@ -26,8 +28,8 @@ public class BlobbySerializerTest extends GenericImportSerializerTestBase {
                 new BlobbyStorageContainerResource(
                     "foo", "foodir", new ArrayList<>(), new ArrayList<>())));
 
-    List<ImportableData<BlobbySerializer.ExportData>> res =
-        iterableToList(BlobbySerializer.serialize(container));
+    List<ImportableData<BlobsExportData>> res =
+        iterableToList(BlobbySerializer.serialize(container, null));
 
     assertEquals(2, res.size());
     assertEquals("rootdir", res.get(0).getIdempotentId());
@@ -58,8 +60,8 @@ public class BlobbySerializerTest extends GenericImportSerializerTestBase {
                     new DtpDigitalDocument("bar.txt", null, "text/plain"), "text/plain", "bartxt")),
             new ArrayList<>());
 
-    List<ImportableData<BlobbySerializer.ExportData>> res =
-        iterableToList(BlobbySerializer.serialize(container));
+    List<ImportableData<BlobsExportData>> res =
+        iterableToList(BlobbySerializer.serialize(container, null));
 
     assertEquals(3, res.size());
 
@@ -82,10 +84,10 @@ public class BlobbySerializerTest extends GenericImportSerializerTestBase {
         res.get(1).getJsonData());
     assertTrue(res.get(1) instanceof ImportableFileData);
     assertTrue(
-        ((ImportableFileData<BlobbySerializer.ExportData>) res.get(1)).getFile().isInTempStore());
+        ((ImportableFileData<BlobsExportData>) res.get(1)).getFile().isInTempStore());
     assertEquals(
         "foomp4",
-        ((ImportableFileData<BlobbySerializer.ExportData>) res.get(1)).getFile().getFetchableUrl());
+        ((ImportableFileData<BlobsExportData>) res.get(1)).getFile().getFetchableUrl());
 
     assertEquals("bartxt", res.get(2).getIdempotentId());
     assertEquals("bar.txt", res.get(2).getName());
@@ -100,10 +102,10 @@ public class BlobbySerializerTest extends GenericImportSerializerTestBase {
         res.get(2).getJsonData());
     assertTrue(res.get(2) instanceof ImportableFileData);
     assertTrue(
-        ((ImportableFileData<BlobbySerializer.ExportData>) res.get(2)).getFile().isInTempStore());
+        ((ImportableFileData<BlobsExportData>) res.get(2)).getFile().isInTempStore());
     assertEquals(
         "bartxt",
-        ((ImportableFileData<BlobbySerializer.ExportData>) res.get(2)).getFile().getFetchableUrl());
+        ((ImportableFileData<BlobsExportData>) res.get(2)).getFile().getFetchableUrl());
   }
 
   @Test
@@ -128,8 +130,8 @@ public class BlobbySerializerTest extends GenericImportSerializerTestBase {
                             "bartxt")),
                     new ArrayList<>())));
 
-    List<ImportableData<BlobbySerializer.ExportData>> res =
-        iterableToList(BlobbySerializer.serialize(container));
+    List<ImportableData<BlobsExportData>> res =
+        iterableToList(BlobbySerializer.serialize(container, null));
 
     assertEquals(3, res.size());
 
@@ -155,9 +157,9 @@ public class BlobbySerializerTest extends GenericImportSerializerTestBase {
         res.get(2).getJsonData());
     assertTrue(res.get(2) instanceof ImportableFileData);
     assertTrue(
-        ((ImportableFileData<BlobbySerializer.ExportData>) res.get(2)).getFile().isInTempStore());
+        ((ImportableFileData<BlobsExportData>) res.get(2)).getFile().isInTempStore());
     assertEquals(
         "bartxt",
-        ((ImportableFileData<BlobbySerializer.ExportData>) res.get(2)).getFile().getFetchableUrl());
+        ((ImportableFileData<BlobsExportData>) res.get(2)).getFile().getFetchableUrl());
   }
 }

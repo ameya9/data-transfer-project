@@ -8,6 +8,7 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.datatransferproject.spi.transfer.idempotentexecutor.IdempotentImportExecutor;
 import org.datatransferproject.types.common.models.FavoriteInfo;
 import org.datatransferproject.types.common.models.media.MediaAlbum;
 import org.datatransferproject.types.common.models.media.MediaContainerResource;
@@ -166,7 +167,7 @@ public class MediaSerializer {
   })
   public interface ExportData {}
 
-  public static Iterable<ImportableData<ExportData>> serialize(MediaContainerResource container) {
+  public static Iterable<ImportableData<ExportData>> serialize(MediaContainerResource container, IdempotentImportExecutor executor) {
     return Stream.concat(
             container.getAlbums().stream()
                 .map(

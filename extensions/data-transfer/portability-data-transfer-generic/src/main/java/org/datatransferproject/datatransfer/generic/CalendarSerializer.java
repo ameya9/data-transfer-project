@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.datatransferproject.spi.transfer.idempotentexecutor.IdempotentImportExecutor;
 import org.datatransferproject.types.common.models.calendar.CalendarAttendeeModel;
 import org.datatransferproject.types.common.models.calendar.CalendarContainerResource;
 import org.datatransferproject.types.common.models.calendar.CalendarEventModel;
@@ -63,7 +64,7 @@ public class CalendarSerializer {
           + "/portability-types-common/src/main/java/org/datatransferproject/types/common/models/calendar/CalendarEventModel.java";
 
   public static Iterable<ImportableData<ExportData>> serialize(
-      CalendarContainerResource container) {
+      CalendarContainerResource container, IdempotentImportExecutor idempotentImportExecutor) {
     return Stream.concat(
             container.getCalendars().stream()
                 .map(
