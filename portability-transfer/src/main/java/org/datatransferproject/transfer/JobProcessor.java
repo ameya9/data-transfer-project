@@ -171,27 +171,33 @@ class JobProcessor {
     } catch (IOException | CopyException | RuntimeException e) {
       monitor.severe(() -> "Error processing jobId: " + jobId, e, EventCode.WORKER_JOB_ERRORED);
     } finally {
-      // The errors returned by copier.getErrors are those logged by the idempotentImportExecutor
-      // and are distinct from the exceptions thrown by copier.copy
-      final Collection<ErrorDetail> loggedErrors = copier.getErrors(jobId);
-      final int numErrors = loggedErrors.size();
-      // success is set to true above if copy returned without throwing
-      success &= loggedErrors.isEmpty();
-      monitor.debug(
-          () -> format("Finished processing jobId: %s with %d error(s).", jobId, numErrors),
-          EventCode.WORKER_JOB_FINISHED);
-      addErrorsAndMarkJobFinished(jobId, success, loggedErrors);
-      hooks.jobFinished(jobId, success);
-      JobLifeCycle finalStatus = deriveFinalJobStatus(success);
-      sendSignals(jobId, exportAuthData, importAuthData, finalStatus, monitor);
-      dtpInternalMetricRecorder.finishedJob(
-          JobMetadata.getDataType(),
-          JobMetadata.getExportService(),
-          JobMetadata.getImportService(),
-          success,
-          JobMetadata.getStopWatch().elapsed());
-      monitor.flushLogs();
-      JobMetadata.reset();
+      try {
+        // The errors returned by copier.getErrors are those logged by the idempotentImportExecutor
+        // and are distinct from the exceptions thrown by copier.copy
+        final Collection<ErrorDetail> loggedErrors = copier.getErrors(jobId);
+        final int numErrors = loggedErrors.size();
+        // success is set to true above if copy returned without throwing
+        success &= loggedErrors.isEmpty();
+        monitor.debug(
+            () -> format("Finished processing jobId: %s with %d error(s).", jobId, numErrors),
+            EventCode.WORKER_JOB_FINISHED);
+        addErrorsAndMarkJobFinished(jobId, success, loggedErrors);
+        hooks.jobFinished(jobId, success);
+        JobLifeCycle finalStatus = deriveFinalJobStatus(success);
+        sendSignals(jobId, exportAuthData, importAuthData, finalStatus, monitor);
+        dtpInternalMetricRecorder.finishedJob(
+            JobMetadata.getDataType(),
+            JobMetadata.getExportService(),
+            JobMetadata.getImportService(),
+            success,
+            JobMetadata.getStopWatch().elapsed());
+        monitor.flushLogs();
+      } finally {
+        // Always clear per-job state -- including the decrypted private key material held in
+        // the static JobMetadata singleton -- even if the cleanup steps above throw. Otherwise
+        // a worker JVM that is reused across jobs would retain stale secrets and job state.
+        JobMetadata.reset();
+      }
     }
   }
 
